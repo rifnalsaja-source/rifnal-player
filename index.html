@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RIFNAL ALL TOOLS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+body{background:#000;color:#fff;height:100dvh;overflow:hidden}
+#menuPage{height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;position:absolute;inset:0;z-index:2;background:#000;transition:transform.45s cubic-bezier(.77,0,.175,1),opacity.35s ease}
+#menuPage.exit{transform:translateX(-28%) scale(.96);opacity:0;pointer-events:none}
+.logo{width:72px;height:72px;background:#fff;border-radius:18px;display:flex;align-items:center;justify-content:center;animation:pop.7s cubic-bezier(.175,.885,.32,1.275).1s both}
+@keyframes pop{0%{transform:scale(0)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+.logo svg{width:34px;fill:#000}
+h2{animation:up.5s ease.3s both;letter-spacing:.5px}
+.sub{color:#666;font-size:11px;margin-top:-6px;animation:up.5s ease.4s both;letter-spacing:1px}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+#list{width:100%;max-width:340px;display:flex;flex-direction:column;gap:12px;margin-top:10px}
+.btn{width:100%;padding:18px 20px;border-radius:18px;background:#0a0a0a;border:1px solid #1a1a1a;color:#fff;font-weight:700;display:flex;justify-content:space-between;align-items:center;cursor:pointer;animation:up.5s ease both;transition:transform.15s}
+.btn:active{transform:scale(.96)}
+.btn span{font-size:10px;padding:4px 8px;border-radius:20px;background:#06100a;border:1px solid #143d1f;color:#22c55e}
+#playerPage{position:absolute;inset:0;z-index:3;background:#000;display:flex;flex-direction:column;transform:translateX(100%);opacity:0;transition:transform.5s cubic-bezier(.77,0,.175,1),opacity.4s ease;pointer-events:none}
+#playerPage.active{transform:translateX(0);opacity:1;pointer-events:auto}
+#topBar{height:54px;display:flex;align-items:center;gap:12px;padding:0 14px;border-bottom:1px solid #111}
+#back{width:38px;height:38px;border-radius:10px;background:#111;border:1px solid #1a1a1a;display:flex;align-items:center;justify-content:center;cursor:pointer}
+#wrap{flex:1;position:relative;overflow:hidden;background:#000}
+iframe{position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0;transform:scale(.98) translateY(10px);transition:opacity.4s ease.3s,transform.4s ease.3s}
+#playerPage.active iframe.loaded{opacity:1;transform:scale(1) translateY(0)}
+#loader{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.dot{width:40px;height:40px;border:3px solid #1a1a1a;border-top-color:#fff;border-radius:50%;animation:spin.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div id="menuPage">
+<div class="logo"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+<h2>RIFNAL ALL TOOLS</h2>
+<p class="sub">PILIH TOOLS DIBAWAH</p>
+<div id="list"></div>
+</div>
+
+<div id="playerPage">
+<div id="topBar"><div id="back" onclick="closePlayer()">←</div><div id="pTitle" style="font-weight:800;font-size:14px">TOOLS</div></div>
+<div id="wrap"><div id="loader"><div class="dot"></div><p style="font-size:11px;color:#555;letter-spacing:1px">MEMBUKA TOOLS...</p></div><iframe id="frame"></iframe></div>
+</div>
+
+<script>
+const menus = [
+{
+    name: "Translator Pro",
+    tag: "ONLINE",
+    html: `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}body{background:#000;color:#fff;height:100dvh;display:flex;justify-content:center}.app{width:100%;max-width:500px;height:100dvh;display:flex;flex-direction:column;gap:10px;padding:12px}.top{display:flex;justify-content:space-between;align-items:center}.badge{background:#06100a;border:1px solid #143d1f;color:#22c55e;padding:6px 10px;border-radius:20px;font-size:10px;font-weight:700}.sel{display:flex;gap:8px;background:#0a0a0a;border:1px solid #1a1a1a;border-radius:30px;padding:6px}select{flex:1;background:#111;border:1px solid #222;color:#fff;padding:10px;border-radius:20px;text-align:center;font-weight:600}#swap{width:40px;height:40px;border-radius:50%;border:none;background:#fff;font-weight:700}.chat{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:6px 2px}.bubble{padding:12px 14px;border-radius:16px;font-size:14px;max-width:92%;line-height:1.5}.user{align-self:flex-end;background:#fff;color:#000;border-bottom-right-radius:4px}.ai{align-self:flex-start;background:#0a0a0a;border:1px solid #1a1a1a;color:#ddd;width:92%;border-bottom-left-radius:4px}.out{background:#080808;border:1px solid #141414;border-radius:12px;padding:10px;margin-top:8px;color:#ccc;white-space:pre-wrap}.input{display:flex;gap:8px;background:#0a0a0a;border:1px solid #1a1a1a;border-radius:28px;padding:6px 6px 6px 16px;align-items:flex-end}textarea{flex:1;background:transparent;border:none;outline:none;color:#fff;resize:none;min-height:24px;max-height:120px;font-size:14px;padding:10px 0}.send{width:44px;height:44px;border-radius:50%;background:#fff;border:none;font-weight:700}</style></head><body><div class="app"><div class="top"><div style="font-weight:800">TRANSLATOR PRO</div><div class="badge">ONLINE</div></div><div class="sel"><select id="from"><option value="id">ID</option><option value="en" selected>EN</option><option value="ja">JP</option><option value="ko">KO</option><option value="ar">AR</option><option value="zh">CN</option></select><button id="swap">⇄</button><select id="to"><option value="id" selected>ID</option><option value="en">EN</option><option value="ja">JP</option><option value="ko">KO</option><option value="ar">AR</option><option value="zh">CN</option></select></div><div class="chat" id="chat"><div class="bubble ai">Halo! Ketik teks apapun.</div></div><div class="input"><textarea id="inp" placeholder="Ketik teks..." rows="1"></textarea><button class="send" id="send">↑</button></div></div><script>const chat=document.getElementById('chat'),inp=document.getElementById('inp'),from=document.getElementById('from'),to=document.getElementById('to');document.getElementById('swap').onclick=()=>{let a=from.value;from.value=to.value;to.value=a};function add(t,c){let d=document.createElement('div');d.className='bubble '+c;d.innerHTML=t;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;return d}inp.addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'});async function go(){let txt=inp.value.trim();if(!txt)return;add(txt,'user');inp.value='';inp.style.height='auto';let load=add('Translating...','ai');try{let r=await fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(txt)+'&langpair='+from.value+'|'+to.value);let j=await r.json();load.remove();let hasil=j.responseData.translatedText;add(from.value.toUpperCase()+' → '+to.value.toUpperCase()+'<div class=out>'+hasil+'</div><div style=margin-top:8px><button onclick=navigator.clipboard.writeText(this.dataset.t) data-t='+hasil.replace(/"/g,'&quot;')+' style=background:#06100a;border:1px solid #143d1f;color:#22c55e;padding:6px 12px;border-radius:20px;font-size:10px;font-weight:700>COPY</button></div>','ai');}catch(e){load.remove();add('Gagal: '+e.message,'ai')}}document.getElementById('send').onclick=go;inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();go()}});<\/script></body></html>`
+  },
+{
+    name: "COPY CAPTION TIKTOK",
+    tag: "ONLINE",
+    html: `<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>RIFNAL AI - Direct Player Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}html,body{height:100%;overflow:hidden}body{background:#000;font-family:'Inter',sans-serif;color:#fff}
+.app{max-width:540px;width:100%;height:100dvh;margin:0 auto;display:flex;flex-direction:column;gap:10px;padding:12px}
+.header{display:flex;justify-content:space-between;align-items:center;padding:4px 0}
+.header-left{display:flex;align-items:center;gap:12px}
+.logo-box{background:#fff;width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.logo-box svg{width:24px;fill:#000}
+.brand h1{font-size:16px;font-weight:700}.brand .sub{font-size:10px;color:#666;text-transform:uppercase;margin-top:2px}
+.status-badge{display:flex;align-items:center;gap:6px;background:#0a0a0a;border:1px solid #1a1a1a;padding:7px 12px;border-radius:30px;font-size:10px;font-weight:600;transition:.2s}
+.status-badge .dot{width:7px;height:7px;border-radius:50%;animation:pulse 1.8s infinite}
+.status-badge.checking{color:#f59e0b}.status-badge.checking .dot{background:#f59e0b}
+.status-badge.online{background:#06100a;border-color:#143d1f;color:#22c55e}.status-badge.online .dot{background:#22c55e;box-shadow:0 0 8px #22c55e}
+.status-badge.offline{background:#100606;border-color:#3d1414;color:#ef4444}.status-badge.offline .dot{background:#ef4444}
+.status-badge.nointernet{background:#100606;border-color:#3d1414;color:#ef4444}.status-badge.nointernet .dot{background:#ef4444}
+@keyframes pulse{0%{opacity:.4;transform:scale(.9)}50%{opacity:1;transform:scale(1.2)}100%{opacity:.4;transform:scale(.9)}}
+.chat-area{flex:1;min-height:0;display:flex;flex-direction:column;gap:14px;padding:8px 2px;overflow-y:auto}
+.bubble{max-width:88%;padding:12px 16px;border-radius:20px;font-size:14px;line-height:1.6;animation:up .3s ease}
+@keyframes up{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.bubble.user{align-self:flex-end;background:#fff;color:#000;border-bottom-right-radius:6px}
+.bubble.ai{align-self:flex-start;background:#0a0a0a;border:1px solid #1a1a1a;color:#eaeaea;width:92%;border-bottom-left-radius:6px}
+.bubble.ai .ai-label{font-size:10px;font-weight:700;color:#555;margin-bottom:8px;letter-spacing:.8px}
+.video-wrap{border-radius:16px;overflow:hidden;background:#000;height:420px;border:1px solid #1a1a1a;margin:10px 0}
+.video-wrap video{width:100%;height:100%;object-fit:contain}
+.video-bar{display:flex;justify-content:space-between;padding:8px 2px;font-size:10px;font-weight:700;color:#555;border-bottom:1px solid #111}
+.caption-box{background:#080808;border-radius:12px;padding:10px;color:#ccc;white-space:pre-wrap;max-height:120px;overflow-y:auto;border:1px solid #141414}
+.detector{display:flex;align-items:center;gap:8px;padding:10px 18px;background:#0a0a0a;border:1px solid #1a1a1a;border-radius:40px;font-size:12px;transition:.2s}
+.detector.neutral{color:#666}.detector.valid{color:#22c55e;background:#06100a;border-color:#143d1f}.detector.invalid{color:#ef4444;background:#100606;border-color:#3d1414}
+.input-area{display:flex;gap:10px;background:#0a0a0a;border:1px solid #1a1a1a;border-radius:28px;padding:6px 6px 6px 20px}
+.input-area input{flex:1;background:transparent;border:none;outline:none;color:#fff;font-size:14px;padding:12px 0}
+.send-btn{width:46px;height:46px;border-radius:50%;background:#fff;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.send-btn svg{width:20px;fill:#000}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid #222;border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.error-text{color:#ef4444}.warn-text{color:#f59e0b}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="header"><div class="header-left"><div class="logo-box"><svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg></div><div class="brand"><h1>RIFNAL AI</h1><div class="sub">Direct Player Pro</div></div></div><div class="status-badge checking" id="statusBadge"><span class="dot"></span><span id="statusText">CHECKING</span></div></div>
+<div class="chat-area" id="chatArea"><div class="bubble ai"><div class="ai-label">RIFNAL AI</div>Kirim tautan video TikTok, saya akan mengambil video asli tanpa watermark.</div></div>
+<div class="detector neutral" id="detectorBar"><span id="detectorText">Menunggu link...</span></div>
+<div class="input-area"><input id="urlInput" placeholder="https://www.tiktok.com/@user/video/..." autocomplete="off"><button class="send-btn" id="sendBtn"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button></div>
+</div>
+<script>
+(function(){
+const statusBadge=document.getElementById('statusBadge'),statusText=document.getElementById('statusText'),chatArea=document.getElementById('chatArea'),urlInput=document.getElementById('urlInput'),sendBtn=document.getElementById('sendBtn'),detectorBar=document.getElementById('detectorBar'),detectorText=document.getElementById('detectorText');
+function setStatus(t,l){statusBadge.className='status-badge '+t;statusText.textContent=l}
+async function checkStatus(){
+  if(!navigator.onLine){setStatus('nointernet','NO INTERNET');return}
+  setStatus('checking','CHECKING');
+  try{
+    const c=new AbortController();setTimeout(()=>c.abort(),3500);
+    await fetch('https://www.gstatic.com/generate_204',{signal:c.signal,cache:'no-store',mode:'no-cors'});
+    setStatus('online','ONLINE');
+  }catch{setStatus('nointernet','NO INTERNET')}
+}
+checkStatus();setInterval(checkStatus,10000);
+window.addEventListener('online',checkStatus);
+window.addEventListener('offline',()=>setStatus('nointernet','NO INTERNET'));
+function updateDetector(){let v=urlInput.value.trim();if(!v){detectorBar.className='detector neutral';detectorText.textContent='Menunggu link...';return}if(/(tiktok\\.com|vt\\.tiktok\\.com|vm\\.tiktok\\.com)/i.test(v)){detectorBar.className='detector valid';detectorText.textContent='Link valid - siap putar'}else{detectorBar.className='detector invalid';detectorText.textContent='Link tidak valid (bukan TikTok)'}}
+urlInput.addEventListener('input',updateDetector);
+urlInput.addEventListener('paste',()=>setTimeout(updateDetector,50));
+updateDetector();
+function pauseAll(vs,ex){document.querySelectorAll('video').forEach(v=>{if(v!==ex&&!v.paused)v.pause()})}
+function addUserMessage(t){let d=document.createElement('div');d.className='bubble user';d.textContent=t;chatArea.appendChild(d);chatArea.scrollTop=chatArea.scrollHeight}
+function addAiMessage(h){let d=document.createElement('div');d.className='bubble ai';d.innerHTML='<div class="ai-label">RIFNAL AI</div>'+h;chatArea.appendChild(d);chatArea.scrollTop=chatArea.scrollHeight;return d}
+function addAiError(m){addAiMessage('<span class="error-text">'+m+'</span>')}
+function buildCard(d){let esc=(d.title||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');return '<div class="video-wrap"><video controls playsinline poster="'+(d.cover||'')+'" src="'+(d.play||d.hdplay||'')+'"></video></div><div class="video-bar"><span>DIRECT VIDEO</span><span class="right">NO WATERMARK</span></div><div class="caption-box">'+esc+'</div>'}
+async function processUrl(url){if(!navigator.onLine){addAiError('Tidak ada internet');return}let load=addAiMessage('<span class="spinner"></span> Mengambil video...');try{let r=await fetch('https://www.tikwm.com/api/?url='+encodeURIComponent(url));let j=await r.json();if(j.code!==0||!j.data)throw new Error(j.msg||'Gagal');load.remove();let m=addAiMessage(buildCard(j.data));let v=m.querySelector('video');if(v)v.addEventListener('play',function(){pauseAll(document.querySelectorAll('video'),this)})}catch(e){load.remove();addAiError('Gagal: '+(e.message||'Coba lagi'));setStatus('offline','API OFFLINE')}}
+async function handleSend(){let url=urlInput.value.trim();if(!url){addAiMessage('<span class="warn-text">Masukkan link dulu ya</span>');return}if(!/(tiktok\\.com|vt\\.tiktok\\.com|vm\\.tiktok\\.com)/i.test(url)){addAiError('Link tidak valid');urlInput.value='';updateDetector();return}addUserMessage(url);urlInput.value='';updateDetector();sendBtn.disabled=true;await processUrl(url);sendBtn.disabled=false}
+sendBtn.onclick=handleSend;urlInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();handleSend()}});
+})();
+<\/script>
+</body>
+</html>`
+  }
+];
+
+const list=document.getElementById('list'), menuPage=document.getElementById('menuPage'), playerPage=document.getElementById('playerPage'), frame=document.getElementById('frame'), loader=document.getElementById('loader');
+
+function render(){
+  list.innerHTML='';
+  if(menus.length===0){
+    list.innerHTML='<div class="btn" style="justify-content:center;color:#333;border-style:dashed;animation-delay:.5s">Belum ada tools - isi const menus</div>';
+    return;
+  }
+  menus.forEach((m,i)=>{
+    const b=document.createElement('button');
+    b.className='btn'; b.style.animationDelay=(0.5+i*0.1)+'s';
+    b.innerHTML=m.name+' <span>'+m.tag+'</span>';
+    b.onclick=()=>openPlayer(i);
+    list.appendChild(b);
+  });
+}
+render();
+
+function openPlayer(i){
+  menuPage.classList.add('exit');
+  playerPage.classList.add('active');
+  document.getElementById('pTitle').innerText=menus[i].name;
+  frame.classList.remove('loaded'); loader.style.display='flex';
+  const blob=new Blob([menus[i].html],{type:'text/html'});
+  frame.src=URL.createObjectURL(blob);
+  frame.onload=()=>{ setTimeout(()=>{loader.style.display='none'; frame.classList.add('loaded');},400); };
+}
+function closePlayer(){
+  menuPage.classList.remove('exit'); playerPage.classList.remove('active');
+  frame.classList.remove('loaded'); setTimeout(()=>{frame.src='';},400);
+}
+</script>
+</body>
+</html>
